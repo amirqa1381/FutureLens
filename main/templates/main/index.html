@@ -1,0 +1,13 @@
+{% extends "master.html" %}
+
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<h1>Matplotlib Chart</h1>
+
+<img src="data:image/png;base64,{{ chart }}" alt="Sine Wave Chart">
+
+{% endblock %}
