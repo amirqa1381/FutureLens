@@ -7,4 +7,12 @@ User Upload Show
 
 {% block content %}
 {{to_html|safe}}
+<form method='post'>
+{% csrf_token %}
+<button type="submit" name="another_button" class="btn btn-outline-primary">Click Me</button>
+</form>
+
+{% if result %}
+{{result}}
+{% endif %}
 {% endblock  %}

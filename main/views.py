@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 import base64
-from data_code import read_file
+from data_code import read_file, columns
 from .forms import GetFile
 import base64
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -62,6 +62,7 @@ def getting_form(request: HttpRequest):
             data = read_file(uploaded_file)
             print(data)
             to_html = data.to_html(classes="table table_striped", index=False)
+            request.session['data_html'] = to_html
             context = {
                 "to_html": to_html,
             }
@@ -70,3 +71,14 @@ def getting_form(request: HttpRequest):
         else:
             context = {"form": form}
             return render(request, "main/getting_file.html", context)
+    # handel the button click
+    if 'another_button' in request.POST:
+        to_html = request.session.get('data_html', None)
+        result = columns()
+        context = {
+            'to_html': to_html,
+            'result':result
+        }
+        return render(request, 'main/user_upload_show.html',context)
+
+
