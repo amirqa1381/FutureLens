@@ -4,18 +4,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 import base64
-from data_code import read_file
+from data_code import read_file, columns
 from .forms import GetFile
 import base64
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import csv
 
+
 def read(request: HttpRequest):
     data = read_file()
-    to_html = data.to_html(classes='table table_striped', index=False)
+    to_html = data.to_html(classes="table table_striped", index=False)
 
     context = {"data": to_html}
-    return render(request, 'main/data_show.html', context)
+    return render(request, "main/data_show.html", context)
 
 
 def index_view(request: HttpRequest):
@@ -50,27 +51,34 @@ def index_view(request: HttpRequest):
 
 
 def getting_form(request: HttpRequest):
-    if request.method == 'GET':
+    if request.method == "GET":
         form = GetFile()
-        context = {
-            'form': form
-        }
-        return render(request, 'main/getting_file.html', context)
+        context = {"form": form}
+        return render(request, "main/getting_file.html", context)
     elif request.method == "POST":
-        csv_data = []
-        form = GetFile(request.POST)
+        form = GetFile(request.POST, request.FILES)
         if form.is_valid():
-            uploaded_file = request.FILES['file']
-            if uploaded_file.name.endswith('.csv'):
-                csv_file = io.TextIOWrapper(uploaded_file.file, encoding='utf-8')
-                reader = csv.reader(csv_file)
-                for row in reader:
-                    csv_data.append(row)
-            return render(request, 'main/getting_file.html', {'csv_data': csv_data})
+            uploaded_file = form.cleaned_data["file"]
+            data = read_file(uploaded_file)
+            print(data)
+            to_html = data.to_html(classes="table table_striped", index=False)
+            request.session['data_html'] = to_html
+            context = {
+                "to_html": to_html,
+            }
+            print("Successfull")
+            return render(request, "main/user_upload_show.html", context)
+        else:
+            context = {"form": form}
+            return render(request, "main/getting_file.html", context)
+    # handel the button click
+    if 'another_button' in request.POST:
+        to_html = request.session.get('data_html', None)
+        result = columns()
         context = {
-            'form': form
+            'to_html': to_html,
+            'result':result
         }
-        return render(request, 'main/getting_file.html', context)
-        
-            
-            
+        return render(request, 'main/user_upload_show.html',context)
+
+

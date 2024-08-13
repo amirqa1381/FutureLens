@@ -11,25 +11,10 @@ File Input
         <h1>Upload a File</h1>
     <form action="{% url "getting_file" %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <label for="file-upload">Choose a CSV file:</label>
-        <input type="file" id="file-upload" name="file" accept=".csv" required>
+        {{form.as_p}}
         <br><br>
-        <input type="submit" value="Upload">
+        <button type="submit" class="btn btn-outline-primary">Upload</button>
     </form>
-    <div>
-        {% if csv_data %}
-            <h2>Csv data: </h2>
-            {% for row in csv_data %}
-                <table border='1'>
-                    <tr>
-                        {% for item in row %}
-                            <td>{{item}}</td>
-                        {% endfor %}
-                    </tr>
-                </table>
-            {% endfor %}
-        {% endif %}
-    </div>
     </div>
 </div>
 {% endblock content %}
