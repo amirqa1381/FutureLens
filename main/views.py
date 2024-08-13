@@ -5,6 +5,15 @@ import numpy as np
 import io
 import urllib
 import base64
+from data_code import read_file
+
+
+def read(request: HttpRequest):
+    data = read_file()
+    to_html = data.to_html(classes='table table_striped', index=False)
+
+    context = {"data": to_html}
+    return render(request, 'main/data_show.html', context)
 
 
 def index_view(request: HttpRequest):
