@@ -3,10 +3,12 @@ from django.http import HttpRequest
 import matplotlib.pyplot as plt
 import numpy as np
 import io
-import urllib
 import base64
 from data_code import read_file
-
+from .forms import GetFile
+import base64
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import csv
 
 def read(request: HttpRequest):
     data = read_file()
@@ -45,3 +47,30 @@ def index_view(request: HttpRequest):
     image_str = image_png.decode("utf-8")
     context = {"chart": image_str}
     return render(request, "main/index.html", context)
+
+
+def getting_form(request: HttpRequest):
+    if request.method == 'GET':
+        form = GetFile()
+        context = {
+            'form': form
+        }
+        return render(request, 'main/getting_file.html', context)
+    elif request.method == "POST":
+        csv_data = []
+        form = GetFile(request.POST)
+        if form.is_valid():
+            uploaded_file = request.FILES['file']
+            if uploaded_file.name.endswith('.csv'):
+                csv_file = io.TextIOWrapper(uploaded_file.file, encoding='utf-8')
+                reader = csv.reader(csv_file)
+                for row in reader:
+                    csv_data.append(row)
+            return render(request, 'main/getting_file.html', {'csv_data': csv_data})
+        context = {
+            'form': form
+        }
+        return render(request, 'main/getting_file.html', context)
+        
+            
+            
