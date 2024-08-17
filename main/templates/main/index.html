@@ -1,13 +1,37 @@
-{% extends "master.html" %}
+{% extends "master.html" %}  
 
+{% block title %}  
+Home  
+{% endblock %}  
 
-{% block title %}
-Home
-{% endblock %}
+{% block content %}  
+<div class='container mt-5'>  
+    <div class='row'>  
+        <div class='col-md-12 text-center'>  
+            <h1 id='head-file'>  
+                Welcome to this Data Analysis App  
+            </h1>  
+        </div>  
+    </div>  
 
-{% block content %}
-<h1>Matplotlib Chart</h1>
+    <div class='row mt-4'>  
+        <div class='col-md-12 text-center'>  
+            <h2>Choose an Action</h2>  
+            <div class="btn-group mt-3" role="group" aria-label="Basic example">  
+                <button type="button" class="btn btn-primary">Action 1</button>  
+                <button type="button" class="btn btn-secondary">Action 2</button>  
+                <button type="button" class="btn btn-success">Action 3</button>  
+                <button type="button" class="btn btn-danger">Action 4</button>  
+                <button type="button" class="btn btn-warning">Action 5</button>  
+            </div>  
+        </div>  
+    </div>  
 
-<img src="data:image/png;base64,{{ chart }}" alt="Sine Wave Chart">
+    <div class='row mt-4'>  
+        <div class='col-md-12 text-center'>  
+            <img src="data:image/png;base64,{{ chart }}" alt="Sine Wave Chart" class="img-fluid mt-3">  
+        </div>  
+    </div>  
+</div>  
 
 {% endblock %}
