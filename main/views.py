@@ -63,7 +63,7 @@ class ShowTheChart(View):
         Args:
             request (HttpRequest): _description_
         """
-        file = r"/home/amir/django/data_analys/data_code/datas/Cust_Segmentation.csv"
+        file = r""
         csv_reader = CSVReader(file)
         data_info = csv_reader.data_info()
         object_columns = csv_reader.object_datatype()
