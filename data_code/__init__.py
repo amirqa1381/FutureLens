@@ -27,7 +27,7 @@ def read_file(string):
 # def columns():
 #     data = read_file()
 #     columns = data.columns
-#
+
 #     return columns
 #
 # def goupby():
