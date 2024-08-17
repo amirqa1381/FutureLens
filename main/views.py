@@ -4,12 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 import base64
-from data_code import read_file, columns
-from .forms import GetFile
-import base64
 from django.core.files.uploadedfile import InMemoryUploadedFile
-import csv
 from django.views import View
+from data_code import CSVReader
+
+
 
 
 class IndexView(View):
@@ -64,7 +63,18 @@ class ShowTheChart(View):
         Args:
             request (HttpRequest): _description_
         """
-        pass
+        file = r"/home/amir/django/data_analys/data_code/datas/Iris.csv"
+        csv_reader = CSVReader(file)
+        data_info = csv_reader.data_info()
+        object_columns = csv_reader.object_datatype()
+        print(object_columns)
+        describe = csv_reader.data_describe()
+        context = {
+            'data_info': data_info,
+            'object_columns': object_columns,
+            'describe': describe,
+        }
+        return render(request, 'main/chart.html', context)
     
     def post(self, request: HttpRequest):
         """
