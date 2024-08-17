@@ -1,61 +1,51 @@
 import pandas as pd
+import io
 
 
-def read_file():
-    data = pd.read_csv(r'data_code/datas/Iris.csv')
-    return data
+class CSVReader:
+    def __init__(self, file):
+        """Read the CSV file into a pandas DataFrame."""
+        try:
+            self.file = file
+            self.data = pd.read_csv(file)  # Read CSV from file stream
+            print("Successfully read CSV file.")
+        except Exception as e:
+            print(f"Error reading the CSV file: {e}")
 
-def object_datatype():
-    data = read_file()
-    object_columns = data.select_dtypes(include=['object']).columns
-    object_column_names = object_columns.tolist()
+    def object_datatype(self):
+        object_columns = self.data.select_dtypes(include=['object']).columns
+        return object_columns.tolist()
 
-    return object_column_names
+    def isna(self):
+        if self.data.isna().any().any():
+            return self.data.columns[self.data.isna().any()].tolist()
+        else:
+            return False
 
-def isna():
-    data = read_file()
-    result = data.isna().any().any()
-    if result:
-        isna_column = data.columns[data.isna().any()].tolist()
-        return isna_column
-    else:
-        return False
+    def dropna(self):
+        na_columns = self.isna()
+        if na_columns:
+            self.data.drop(na_columns, axis=1, inplace=True)
+            return na_columns
+        else:
+            return False
 
+    def data_info(self):
+        # Create a temporary DataFrame to capture the info
+        info = self.data.info()
+        return info  # Return as string
 
-def dropna():
-    data = read_file()
-    if isna():
-        data.drop(isna(), axis=1, inplace=True)
-    else:
-        return False
+    def data_describe(self):
+        return self.data.describe()
 
-def data_info():
-    data = read_file()
-    info = data.info()
-
-    # if object_datatype:
-    #
-    #
-    # return info
-
-def data_describe():
-    data = read_file()
-    describe = data.describe()
-
-    return describe
-
-def columns():
-    data = read_file()
-    columns = data.columns
-
-    return columns
-
-def goupby():
-    data = read_file()
-    input_columns = input('column name')
-    goupby = data.groupby(input_columns).count()
-
-    return goupby
+    def columns(self):
+        return self.data.columns.tolist()
 
 
-print(object_datatype())
+# file = r'C:\Users\ae_sa\OneDrive\Desktop\working in django\Iris.csv'
+# csv_reader = CSVReader(file)
+#
+# data_info = csv_reader.data_info()
+# object_columns = csv_reader.object_datatype()
+# describe = csv_reader.data_describe()
+
