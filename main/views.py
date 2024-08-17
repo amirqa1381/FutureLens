@@ -55,6 +55,26 @@ class IndexView(View):
         pass
 
 
+class ShowTheChart(View):
+    
+    def get(self, request: HttpRequest):
+        """
+        this function is for the get method and when user send the get request this is come 
+        to this method
+        Args:
+            request (HttpRequest): _description_
+        """
+        pass
+    
+    def post(self, request: HttpRequest):
+        """
+        this function is for the post method and when user send the post request this is come 
+        to this method
+        Args:
+            request (HttpRequest): _description_
+        """
+        pass
+
 
 
 
