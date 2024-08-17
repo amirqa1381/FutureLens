@@ -1,4 +1,6 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 import io
 
 
@@ -41,11 +43,26 @@ class CSVReader:
     def columns(self):
         return self.data.columns.tolist()
 
+    def plot_distribution(self):
+        if 'count' in self.data.columns:
+            sns.displot(data=self.data, x='count', hue='workingday', kind='kde', fill=True)
+            plt.title('Count Distribution by Working Day')
+            plt.xlabel('Count')
+            plt.ylabel('Density')
+            plt.show()
+        else:
+            print("The 'count' column does not exist in the DataFrame.")
+        # plt.figure(figsize=(15, 8))
+        # sns.displot(self.data, x='count', hue='weather', kind='kde', palette='pastel')
+        # plt.show()
 
-# file = r'C:\Users\ae_sa\OneDrive\Desktop\working in django\Iris.csv'
-# csv_reader = CSVReader(file)
-#
+
+file = r"C:\Users\ae_sa\OneDrive\Desktop\data scientist\data analysis\06 - logestic regression\Mini Project 2 - Regression (Bike Sharing Demand)\train.csv"
+csv_reader = CSVReader(file)
+
 # data_info = csv_reader.data_info()
 # object_columns = csv_reader.object_datatype()
 # describe = csv_reader.data_describe()
+plot = csv_reader.plot_distribution()
+print(plot)
 
