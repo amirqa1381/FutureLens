@@ -1,8 +1,8 @@
 import pandas as pd
 
 
-def read_file(string):
-    data = pd.read_csv(string)
+def read_file():
+    data = pd.read_csv(r'data_code/datas/Iris.csv')
     return data
 
 def object_datatype():
@@ -33,10 +33,10 @@ def data_info():
     data = read_file()
     info = data.info()
 
-    if object_datatype:
-
-
-    return info
+    # if object_datatype:
+    #
+    #
+    # return info
 
 def data_describe():
     data = read_file()
