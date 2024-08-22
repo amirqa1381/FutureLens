@@ -7,12 +7,16 @@ import io
 class CSVReader:
     def __init__(self, file):
         """Read the CSV file into a pandas DataFrame."""
-        try:
-            self.file = file
-            self.data = pd.read_csv(file)  # Read CSV from file stream
-            print("Successfully read CSV file.")
-        except Exception as e:
-            print(f"Error reading the CSV file: {e}")
+        self.data = pd.read_csv(file)  # Read CSV from file stream
+        print("Successfully read CSV file.")
+
+    def data_info(self):
+        # Create a temporary DataFrame to capture the info
+        info = self.data.info()
+        return info  # Return as string
+
+    def data_describe(self):
+        return self.data.describe()
 
     def convert_to_html(self):
         """
@@ -47,14 +51,6 @@ class CSVReader:
         else:
             return False
 
-    def data_info(self):
-        # Create a temporary DataFrame to capture the info
-        info = self.data.info()
-        return info  # Return as string
-
-    def data_describe(self):
-        return self.data.describe()
-
     def columns(self):
         return self.data.columns.tolist()
 
@@ -64,25 +60,22 @@ class CSVReader:
             plt.title('Count Distribution by Working Day')
             plt.xlabel('Count')
             plt.ylabel('Density')
-            plt.show()
         else:
             print("The 'count' column does not exist in the DataFrame.")
-        # plt.figure(figsize=(15, 8))
-        # sns.displot(self.data, x='count', hue='weather', kind='kde', palette='pastel')
-        # plt.show()
 
 
-file = r'../../djda/datas/train.csv'
-csv_reader = CSVReader(file)
+
+# file = r'../../djda/datas/train.csv'
+# csv_reader = CSVReader(file)
 
 # data_info = csv_reader.data_info()
 # info = csv_reader.data_info()
-# object_columns = csv_reader.object_datatype()
+# # object_columns = csv_reader.object_datatype()
 # print(info)
 # describe = csv_reader.data_describe()
 # plot = csv_reader.plot_distribution()
 # print(plot)
 
 
-html = csv_reader.convert_to_html()
-print(html)
+# html = csv_reader.convert_to_html()
+# print(html)
