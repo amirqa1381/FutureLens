@@ -14,6 +14,21 @@ class CSVReader:
         except Exception as e:
             print(f"Error reading the CSV file: {e}")
 
+    def convert_to_html(self):
+        """
+        Converts the DataFrame to an HTML table.
+
+        Returns:
+            str: HTML representation of the DataFrame.
+        """
+        try:
+            # Convert DataFrame to HTML
+            html_table = self.data.to_html(classes='table table-striped', index=False)
+            return html_table
+        except Exception as e:
+            print(f"An error occurred while converting to HTML: {e}")
+            return None
+
     def object_datatype(self):
         object_columns = self.data.select_dtypes(include=['object']).columns
         return object_columns.tolist()
@@ -57,12 +72,17 @@ class CSVReader:
         # plt.show()
 
 
-file = r'datas/train.csv'
+file = r'../../djda/datas/train.csv'
 csv_reader = CSVReader(file)
 
 # data_info = csv_reader.data_info()
+# info = csv_reader.data_info()
 # object_columns = csv_reader.object_datatype()
+# print(info)
 # describe = csv_reader.data_describe()
-plot = csv_reader.plot_distribution()
-print(plot)
+# plot = csv_reader.plot_distribution()
+# print(plot)
 
+
+html = csv_reader.convert_to_html()
+print(html)
