@@ -57,7 +57,7 @@ class CSVReader:
         # plt.show()
 
 
-file = r"C:\Users\ae_sa\OneDrive\Desktop\data scientist\data analysis\06 - logestic regression\Mini Project 2 - Regression (Bike Sharing Demand)\train.csv"
+file = r'datas/train.csv'
 csv_reader = CSVReader(file)
 
 # data_info = csv_reader.data_info()
