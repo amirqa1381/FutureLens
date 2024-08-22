@@ -1,5 +1,5 @@
 import sys
-
+import base64
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -34,14 +34,14 @@ class CSVReader:
         """
         try:
             # Convert DataFrame to HTML
-            html_table = self.data.to_html(classes='table table-striped', index=False)
+            html_table = self.data.to_html(classes="table table-striped", index=False)
             return html_table
         except Exception as e:
             print(f"An error occurred while converting to HTML: {e}")
             return None
 
     def object_datatype(self):
-        object_columns = self.data.select_dtypes(include=['object']).columns
+        object_columns = self.data.select_dtypes(include=["object"]).columns
         return object_columns.tolist()
 
     def isna(self):
@@ -62,13 +62,17 @@ class CSVReader:
         return self.data.columns.tolist()
 
     def plot_distribution(self):
-        if 'count' in self.data.columns:
-            sns.displot(data=self.data, x='count', hue='workingday', kind='kde', fill=True)
-            plt.title('Count Distribution by Working Day')
-            plt.xlabel('Count')
-            plt.ylabel('Density')
+        if "count" in self.data.columns:
+            sns.displot(
+                data=self.data, x="count", hue="workingday", kind="kde", fill=True
+            )
+            plt.title("Count Distribution by Working Day")
+            plt.xlabel("Count")
+            plt.ylabel("Density")
         else:
             print("The 'count' column does not exist in the DataFrame.")
+
+    import base64
 
     def displot(self, x_column, hue_column=None):
         """
@@ -80,10 +84,14 @@ class CSVReader:
         """
         try:
             sns.displot(self.data, x=x_column, hue=hue_column, kind="kde", fill=True)
-            plt.title(f'Distribution plot of {x_column}')
+            plt.title(f"Distribution plot of {x_column}")
             plt.xlabel(x_column)
-            plt.ylabel('Density')
-            plt.show()
+            plt.ylabel("Density")
+            img = io.BytesIO()
+            plt.savefig(img, format="png")
+            img.seek(0)
+            img_b64 = base64.b64encode(img.getvalue()).decode("utf-8")
+            return img_b64
         except Exception as e:
             print(f"An error occurred while creating displot: {e}")
 
@@ -97,9 +105,15 @@ class CSVReader:
             hue_column (str or None): The column to use for color encoding.
         """
         try:
-            sns.catplot(x=x_column, y=y_column, hue=hue_column, data=self.data, kind="strip")
-            plt.title(f'Categorical plot of {y_column} vs {x_column}')
-            plt.show()
+            sns.catplot(
+                x=x_column, y=y_column, hue=hue_column, data=self.data, kind="strip"
+            )
+            plt.title(f"Categorical plot of {y_column} vs {x_column}")
+            image = io.BytesIO()
+            plt.savefig(image, format="png")
+            image.seek(0)
+            image_bs64 = base64.b64encode(image.getvalue()).decode("utf-8")
+            return image_bs64
         except Exception as e:
             print(f"An error occurred while creating catplot: {e}")
 
@@ -113,10 +127,14 @@ class CSVReader:
         """
         try:
             sns.histplot(self.data, x=x_column, hue=hue_column, bins=30, kde=True)
-            plt.title(f'Histogram of {x_column}')
+            plt.title(f"Histogram of {x_column}")
             plt.xlabel(x_column)
-            plt.ylabel('Count')
-            plt.show()
+            plt.ylabel("Count")
+            img = io.BytesIO()
+            plt.savefig(img, format='png')
+            img.seek(0)
+            img_bs64 = base64.b64encode(img.getvalue()).decode('utf-8')
+            return img_bs64
         except Exception as e:
             print(f"An error occurred while creating histplot: {e}")
 
@@ -131,13 +149,16 @@ class CSVReader:
         """
         try:
             sns.scatterplot(data=self.data, x=x_column, y=y_column, hue=hue_column)
-            plt.title(f'Scatter plot of {y_column} vs {x_column}')
+            plt.title(f"Scatter plot of {y_column} vs {x_column}")
             plt.xlabel(x_column)
             plt.ylabel(y_column)
-            plt.show()
+            img = io.BytesIO()
+            plt.savefig(img, format='png')
+            img.seek(0)
+            img_b64 = base64.b64encode(img.getvalue()).decode('utf-8')
+            return img_b64
         except Exception as e:
             print(f"An error occurred while creating scatterplot: {e}")
-
 
 
 # file = r'../../djda/datas/train.csv'
