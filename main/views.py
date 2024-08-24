@@ -21,29 +21,7 @@ class IndexView(View):
         """
         this function is the get method and is for handling the get method for routing it
         """
-        # sample data
-        x = np.linspace(0, 10, 100)
-        y = np.sin(x)
-
-        # create the plot
-        plt.figure()
-        plt.plot(x, y)
-        plt.title("Sine Wave")
-        plt.xlabel("x-axis")
-        plt.ylabel("Y-axis")
-
-        # save the plot to the bytesIO object
-        buf = io.BytesIO()
-        plt.savefig(buf, format="png")
-        plt.close()
-        buf.seek(0)
-
-        # Encode the image to base64
-        image_png = base64.b64encode(buf.read())
-        buf.close()
-        image_str = image_png.decode("utf-8")
-        context = {"chart": image_str}
-        return render(request, "main/index.html", context)
+        return render(request, "main/index.html")
 
     def post(self, request: HttpRequest):
         """
