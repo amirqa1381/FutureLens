@@ -6,7 +6,7 @@ import io
 import base64
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views import View
-from data_code import CSVReader
+from data_code.prepare import CSVReader
 
 
 class IndexView(View):
@@ -42,24 +42,22 @@ class ShowTheChart(View):
         file = r"/home/amir/django/data_analys/datas/train.csv"
         csv_reader = CSVReader(file)
         data_info = csv_reader.data_info()
-        object_columns = csv_reader.object_datatype()
         describe = csv_reader.data_describe()
-        displot = csv_reader.displot(x_column="temp", hue_column="workingday")
-        catplot = csv_reader.catplot(
-            x_column="season", y_column="count", hue_column="count"
-        )
-        hisplot = csv_reader.histplot(x_column="windspeed", hue_column="season")
-        scatter = csv_reader.scatterplot(
-            x_column="windspeed", y_column="count", hue_column="season"
-        )
+        # displot = csv_reader.displot(x_column="temp", hue_column="workingday")
+        # catplot = csv_reader.catplot(
+        #     x_column="season", y_column="count", hue_column="count"
+        # )
+        # hisplot = csv_reader.histplot(x_column="windspeed", hue_column="season")
+        # scatter = csv_reader.scatterplot(
+        #     x_column="windspeed", y_column="count", hue_column="season"
+        # )
         context = {
             "data_info": data_info,
-            "object_columns": object_columns,
             "describe": describe,
-            "displot": displot,
-            "catplot": catplot,
-            "hisplot": hisplot,
-            "scatter": scatter,
+            # "displot": displot,
+            # "catplot": catplot,
+            # "hisplot": hisplot,
+            # "scatter": scatter,
         }
         return render(request, "main/chart.html", context)
 
