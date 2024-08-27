@@ -6,24 +6,19 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>Chart</h1>
+            <h1>DataFrame</h1>
             <div class="data-info">
                 <pre>{{ data_info }}</pre>
             </div>
             <br><br>
-            <ul>
-                {% for column in object_columns %}
-                    <li>{{ column }}</li>
-                {% endfor %}
-            </ul>
-
+        
             {{to_html|safe}}
             <br><br>
             <div class="describe">
                 <pre>{{ describe }}</pre>
             </div>
             <br><br>
-            <div>
+            {% comment %} <div>
                 <img src="data:image/png;base64,{{ displot }}" />
                 <br><br>
                 <img src="data:image/png;base64,{{ catplot }}" />
@@ -33,7 +28,7 @@
                 <img src="data:image/png;base64,{{ scatter }}" />
 
 
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
 </div>

@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import io
+import base64
 
 class Plotter:
     def __init__(self, file):
@@ -29,7 +31,11 @@ class Plotter:
             plt.xlabel(x)
             plt.ylabel(y)
             plt.title(f'Plot of {x} vs {y}')
-            return plt
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64decode(buffer.getvalue()).decode()
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -41,7 +47,11 @@ class Plotter:
             plt.xlabel(column)
             plt.ylabel('Frequency')
             plt.title(f'Histogram of {column}')
-            return plt
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64encode(buffer.getvalue()).decode('utf-8')
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -53,7 +63,11 @@ class Plotter:
             plt.xlabel(x)
             plt.ylabel(y)
             plt.title(f'Scatter Plot of {x} vs {y}')
-            return plt
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64encode(buffer.getvalue()).decode('utf-8')
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -65,7 +79,11 @@ class Plotter:
             plt.xlabel(x)
             plt.ylabel(y)
             plt.title(f'Bar Chart of {x} vs {y}')
-            return
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64decode(buffer.getvalue()).decode()
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -73,9 +91,14 @@ class Plotter:
 
     def boxplot(self):
         try:
+            print(self.data.dtypes)
             plt.boxplot(self.data.values)
             plt.title('Box Plot')
-            return plt
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64decode(buffer.getvalue()).decode()
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -85,7 +108,11 @@ class Plotter:
         try:
             sns.pairplot(self.data)
             plt.title('Pair Plot')
-            return plt
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64decode(buffer.getvalue()).decode()
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -95,7 +122,11 @@ class Plotter:
         try:
             sns.countplot(x=column, data=self.data)
             plt.title(f'Count Plot of {column}')
-            return plt
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64decode(buffer.getvalue()).decode()
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -105,7 +136,14 @@ class Plotter:
         try:
             sns.distplot(self.data[column])
             plt.title(f'Distribution Plot of {column}')
-            return plt
+            # here i've created a buffer for read and write 
+            buffer = io.BytesIO()
+            # saving the plot fig
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            # here i've encode the buffer for showing it in the template
+            plot_url = base64.b64encode(buffer.getvalue()).decode()
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -115,7 +153,11 @@ class Plotter:
         try:
             sns.heatmap(self.data.corr(), annot=True, cmap='coolwarm', square=True)
             plt.title('Heatmap')
-            return plt
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            plot_url = base64.b64encode(buffer.getvalue()).decode()
+            return plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
 
