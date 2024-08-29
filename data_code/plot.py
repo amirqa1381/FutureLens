@@ -4,6 +4,7 @@ import seaborn as sns
 import io
 import base64
 
+
 class Plotter:
     def __init__(self, file):
         """Read the CSV file into a pandas DataFrame."""
@@ -59,7 +60,7 @@ class Plotter:
 
     def scatter(self, x, y, hue=None):
         try:
-            plt.scatter(self.data[x], self.data[y], color=hue)
+            plt.scatter(self.data[x], self.data[y], c=self.data[hue])
             plt.xlabel(x)
             plt.ylabel(y)
             plt.title(f'Scatter Plot of {x} vs {y}')
@@ -67,11 +68,11 @@ class Plotter:
             plt.savefig(buffer, format='png')
             buffer.seek(0)
             plot_url = base64.b64encode(buffer.getvalue()).decode('utf-8')
-            return plot_url
+            return  plot_url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
-        except KeyError:
-            print("Error: Column not found. Please check the column names.")
+        # except KeyError:
+        #     print("Error: Column not found. Please check the column names.")
 
     def bar(self, x, y):
         try:
@@ -162,7 +163,9 @@ class Plotter:
             print("Error: No data available. Please load the data first.")
 
 
-file = r"C:\Users\ae_sa\OneDrive\Desktop\data scientist\data analysis\data sets\titanic\titanic.csv"
+file = r"C:\Users\ae_sa\OneDrive\Desktop\django\FirstProject\djda\datas\titanic.csv"
 plotter = Plotter(file)
-plotter.data_column()
+print(plotter.data_column())
+col = ['PassengerId', 'Age', 'Survived']
+print(plotter.scatter(col[0], col[1], hue=col[2]))
 
