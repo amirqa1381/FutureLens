@@ -3,14 +3,21 @@
 {% block title %}Plot{% endblock %}
 
 {% block content %}
+{% comment %} <img src="data:image/png;base64,{{ displot }}"/> {% endcomment %}
 <div class="container">
     <div class="row">
-        <div class='col-md-12' style='class="col-md-6" style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px'>
-            <img src="data:image/png;base64,{{ displot }}"/>
-            <img src="data:image/png;base64,{{ histplot }}"/>
-            <img src="data:image/png;base64,{{ scatterplot }}"/>
-
+        {% for method, length in methods.items %}
+        <div class="col-md-4">
+            <div class="card" style="margin: 10px; background-color: #e0f7fa;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ method }}</h5>
+                    <p class="card-text">Length is: {{ length }}</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
         </div>
+    {% endfor %}
+        
     </div>
 </div>
 {% endblock %}
