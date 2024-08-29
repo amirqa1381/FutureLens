@@ -1,10 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpRequest
-import io
-import base64
 from django.views import View
 from data_code.prepare import CSVReader
-from data_code.plot import Plotter
+from data_code.plot import Plotter, get_specific_method_name, get_length_of_methods
+from django.contrib import messages
 
 class IndexView(View):
     """
@@ -24,7 +23,9 @@ class IndexView(View):
         """
         this function is the post method and is for handling the post method for routing it
         """
-        pass
+        checked_input = request.POST.getlist('column')
+        print(checked_input)
+        return redirect('data-frame')
 
 
 class ShowTheDataFrame(View):
@@ -40,11 +41,30 @@ class ShowTheDataFrame(View):
         csv_reader = CSVReader(file)
         data_info = csv_reader.data_info()
         describe = csv_reader.data_describe()
+        data_column = csv_reader.data_column()
         context = {
             "data_info": data_info,
             "describe": describe,
+            "data_column": data_column,
         }
         return render(request, "main/data_frame.html", context)
+    
+    def post(self, request: HttpRequest):
+        """
+        this is a function that is for handling the post request and if user submit simething it will handle 
+        it....
+        Args:
+            request (HttpRequest): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        checked_items = request.POST.getlist("columns[]")
+        if len(checked_items) > 2:
+            messages.error(request, f"You should select two items, but you've selected {len(checked_items)}")
+        else:
+            messages.success(request, f"The items was added successfully")
+        return redirect('data-frame')
 
 
 
@@ -64,14 +84,9 @@ class ShowThePlot(View):
         """
         file = r"/home/amir/django/data_analys/datas/titanic.csv"
         plotter = Plotter(file)
-        distplot  = plotter.distplot(column='Age')
-        histplot = plotter.hist(column='Age', hue='Survived')
-        scatterplot = plotter.scatter(x='Survived', y='Age')
-        print(distplot)
+        methods = get_length_of_methods(Plotter, "plot")
         context = {
-            'displot': distplot,
-            'histplot' : histplot,
-            'scatterplot': scatterplot,
+            "methods": methods,
         }
-        return render(request, 'main/plot.html', context)
+        return render(request, "main/plot.html", context)
      
