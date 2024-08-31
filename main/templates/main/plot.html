@@ -1,23 +1,47 @@
-{% extends "master.html" %}
+{% extends "master.html" %}  
 
-{% block title %}Plot{% endblock %}
+{% block title %}Plot{% endblock %}  
 
-{% block content %}
-{% comment %} <img src="data:image/png;base64,{{ displot }}"/> {% endcomment %}
-<div class="container">
-    <div class="row">
-        {% for method, length in methods.items %}
-        <div class="col-md-4">
-            <div class="card" style="margin: 10px; background-color: #e0f7fa;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ method }}</h5>
-                    <p class="card-text">Length is: {{ length }}</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-        
-    </div>
-</div>
+{% block content %}  
+<div class="container">  
+    <div class="row">  
+        {% for method, length in methods.items %}  
+        <div class="col-md-4">  
+            <div class="card" style="margin: 10px; background-color: #e0f7fa;">  
+                <div class="card-body">  
+                    <h5 class="card-title">{{ method }}</h5>  
+                    <p class="card-text">Length is: {{ length }}</p>  
+                    <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample{{ forloop.counter }}" role="button" aria-controls="offcanvasExample{{ forloop.counter }}">  
+                        Select Columns  
+                    </a>  
+                    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample{{ forloop.counter }}" aria-labelledby="offcanvasExampleLabel{{ forloop.counter }}">  
+                        <div class="offcanvas-header">  
+                            <h5 class="offcanvas-title" id="offcanvasExampleLabel{{ forloop.counter }}">Columns for {{ method }}</h5>  
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>  
+                        </div>  
+                        <div>  
+                            <form action='{% url "show_plot" %}' method='post' class="p-4 border rounded shadow-sm bg-light">  
+                                {% csrf_token %}  
+                                <h4 class="mb-3">Select Columns for {{ method }}</h4>  
+                                <div class="form-group">  
+                                    {% for column in data_column %}  
+                                        <div class="form-check">  
+                                            <input class="form-check-input" type="checkbox" value="{{ column }}" id="flexCheck{{ forloop.parentloop.counter }}{{ forloop.counter }}" name="columns[]">  
+                                            <label class="form-check-label" for="flexCheck{{ forloop.parentloop.counter }}{{ forloop.counter }}">  
+                                                {{ column }}  
+                                            </label>  
+                                        </div>  
+                                    {% endfor %}  
+                                </div>  
+                                <input type="hidden" name="method_name" value="{{ method }}">  
+                                <button type="submit" class="btn btn-warning mt-3">Submit</button>  
+                            </form>  
+                        </div>  
+                    </div>  
+                </div>  
+            </div>  
+        </div>  
+        {% endfor %}  
+    </div>  
+</div>  
 {% endblock %}
