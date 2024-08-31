@@ -60,10 +60,6 @@ class ShowTheDataFrame(View):
             _type_: _description_
         """
         checked_items = request.POST.getlist("columns[]")
-        if len(checked_items) > 2:
-            messages.error(request, f"You should select two items, but you've selected {len(checked_items)}")
-        else:
-            messages.success(request, f"The items was added successfully")
         return redirect('data-frame')
 
 
@@ -75,6 +71,7 @@ class ShowThePlot(View):
     Args:
         View (django.views): this is the views
     """
+    file = r"/home/amir/django/data_analys/datas/titanic.csv"
     def get(self, request: HttpRequest):
         """
         this method is for the handling the get method for a time that user send the get request for 
@@ -82,11 +79,41 @@ class ShowThePlot(View):
         Args:
             request (HttpRequest): _description_
         """
-        file = r"/home/amir/django/data_analys/datas/titanic.csv"
-        plotter = Plotter(file)
+        csv_reader = CSVReader(self.file)
         methods = get_length_of_methods(Plotter, "plot")
+        data_column = csv_reader.data_column()
         context = {
             "methods": methods,
+            "data_column": data_column,
         }
         return render(request, "main/plot.html", context)
+    
+    def post(self, request: HttpRequest):
+        """
+        this is the method in the class that is for the handling the post requesst 
+
+        Args:
+            request (HttpRequest): _description_
+        """
+        plotter = Plotter(self.file)
+        # here i've got the methods name and length of their params
+        methods = get_length_of_methods(Plotter, "plot")
+        checked_items = request.POST.getlist("columns[]")
+        chosen_method = request.POST.get("method_name")
+        if chosen_method in methods:
+            # here with this function i've get the method that we should call and use
+            method = getattr(plotter, chosen_method)
+            if len(checked_items) != methods[chosen_method]:
+                messages.error(request, f"The columns that you've chose is {len(checked_items)} but you should insert {methods[chosen_method]}")
+            else:
+                # here i unpack the items that user passed for giving them to the method
+                result = method(*checked_items)
+                messages.success(request, "The Plot has correctly submitted")
+                context = {
+                    'chosen_method': chosen_method,
+                    'result': result,
+                }
+                return render(request, 'main/specific_plot.html', context)
+        return redirect("show_plot")
      
+
