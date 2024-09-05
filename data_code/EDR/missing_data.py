@@ -81,8 +81,7 @@ class MissingValue:
         """
         this method is for a time that we want to bring all the columns
         """
-        return self.data.columns
-
+        
     def fill_all_isna_columns(self):
         """
         in this method we fill all the isna clumns , if coulmn was bifc we fill it with max valure
