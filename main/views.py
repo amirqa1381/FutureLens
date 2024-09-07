@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.views import View
 from data_code.prepare import CSVReader
-from data_code.plot import Plotter, get_specific_method_name, get_length_of_methods
+from data_code.plot import Plotter, get_length_of_methods
 from django.contrib import messages
+from .forms import UploadedFile
+
 
 class IndexView(View):
     """
@@ -17,15 +19,28 @@ class IndexView(View):
         """
         this function is the get method and is for handling the get method for routing it
         """
-        return render(request, "main/index.html")
+        form = UploadedFile()
+        context = {"form": form}
+        return render(request, "main/index.html", context)
 
     def post(self, request: HttpRequest):
         """
         this function is the post method and is for handling the post method for routing it
         """
-        checked_input = request.POST.getlist('column')
-        print(checked_input)
-        return redirect('data-frame')
+        form = UploadedFile(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data["file"]
+            print(file.content_type)
+            print(file.name)
+            return redirect("index")
+        else:
+            for error in form.errors.values():
+                for message in error:
+                    messages.error(request, message)
+            context = {
+                "form": form,
+            }
+            return render(request, "main/index.html", context)
 
 
 class ShowTheDataFrame(View):
@@ -48,10 +63,10 @@ class ShowTheDataFrame(View):
             "data_column": data_column,
         }
         return render(request, "main/data_frame.html", context)
-    
+
     def post(self, request: HttpRequest):
         """
-        this is a function that is for handling the post request and if user submit simething it will handle 
+        this is a function that is for handling the post request and if user submit simething it will handle
         it....
         Args:
             request (HttpRequest): _description_
@@ -60,8 +75,7 @@ class ShowTheDataFrame(View):
             _type_: _description_
         """
         checked_items = request.POST.getlist("columns[]")
-        return redirect('data-frame')
-
+        return redirect("data-frame")
 
 
 class ShowThePlot(View):
@@ -71,10 +85,12 @@ class ShowThePlot(View):
     Args:
         View (django.views): this is the views
     """
+
     file = r"/home/amir/django/data_analys/datas/titanic.csv"
+
     def get(self, request: HttpRequest):
         """
-        this method is for the handling the get method for a time that user send the get request for 
+        this method is for the handling the get method for a time that user send the get request for
         seeing the plot page
         Args:
             request (HttpRequest): _description_
@@ -87,10 +103,10 @@ class ShowThePlot(View):
             "data_column": data_column,
         }
         return render(request, "main/plot.html", context)
-    
+
     def post(self, request: HttpRequest):
         """
-        this is the method in the class that is for the handling the post requesst 
+        this is the method in the class that is for the handling the post requesst
 
         Args:
             request (HttpRequest): _description_
@@ -104,16 +120,17 @@ class ShowThePlot(View):
             # here with this function i've get the method that we should call and use
             method = getattr(plotter, chosen_method)
             if len(checked_items) != methods[chosen_method]:
-                messages.error(request, f"The columns that you've chose is {len(checked_items)} but you should insert {methods[chosen_method]}")
+                messages.error(
+                    request,
+                    f"The columns that you've chose is {len(checked_items)} but you should insert {methods[chosen_method]}",
+                )
             else:
                 # here i unpack the items that user passed for giving them to the method
                 result = method(*checked_items)
                 messages.success(request, "The Plot has correctly submitted")
                 context = {
-                    'chosen_method': chosen_method,
-                    'result': result,
+                    "chosen_method": chosen_method,
+                    "result": result,
                 }
-                return render(request, 'main/specific_plot.html', context)
+                return render(request, "main/specific_plot.html", context)
         return redirect("show_plot")
-     
-
