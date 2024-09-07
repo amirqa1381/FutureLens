@@ -16,11 +16,18 @@ Home
 
     <div class='row mt-4'>  
         <div class='col-md-12 text-center'>  
-            <h2>Choose an Action</h2>  
-            <div class="btn-group mt-3" role="group" aria-label="Basic example">  
+            <br><br>
+            <div class="mb-3">
+                <form action="{% url "index" %}" method="post" enctype="multipart/form-data".>
+                    {% csrf_token %}
+                    {{form.file}}
+                    <button type="submit" class="btn btn-warning mt-3">Submit</button>  
+                </form>
+            </div>
+            {% comment %} <div class="btn-group mt-3" role="group" aria-label="Basic example">  
                 <a href='{% url "data-frame" %}' type="button" class="btn btn-primary" style="margin:20px;border-radius:20px">DataFrame</a>  
                 <a href="{% url "show_plot" %}" type="a" class="btn btn-secondary" style="margin:20px;border-radius:20px">Plot</a>  
-            </div>  
+            </div>   {% endcomment %}
         </div>  
     </div>  
 </div>  
