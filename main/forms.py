@@ -19,7 +19,8 @@ class UploadedFile(forms.Form):
             # here i want to read the file and and seek to the start of the file for with seek 
             # and with csv.reader i try to read the file 
             file.seek(0)
-            csv.reader(file.read().decode("utf-8").splitlines())
-        except Exception:
-            raise forms.ValidationError("Invalid Csv file content")
-        return file
+            reader = csv.reader(file)
+        except Exception as e:
+            raise forms.ValidationError("Invalid Csv file content: "+ str(e))
+        file.seek(0)
+        return self.cleaned_data
