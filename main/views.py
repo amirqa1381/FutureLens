@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.views import View
@@ -5,6 +6,10 @@ from data_code.prepare import CSVReader
 from data_code.plot import Plotter, get_length_of_methods
 from django.contrib import messages
 from .forms import UploadedFile
+from django.core.files.storage import FileSystemStorage
+import os 
+
+
 
 
 class IndexView(View):
@@ -29,9 +34,12 @@ class IndexView(View):
         """
         form = UploadedFile(request.POST, request.FILES)
         if form.is_valid():
-            file = form.cleaned_data["file"]
-            print(file.content_type)
-            print(file.name)
+            file = form.cleaned_data['file']  # Remove subscripting
+            fs = FileSystemStorage(location="media/uploaded-file")
+            filename = fs.save(file.name, file)
+            request.session['main_file'] = os.path.abspath(filename)
+            print(request.session['main_file'])
+            messages.success(request, "The file was successfully uploaded")
             return redirect("index")
         else:
             for error in form.errors.values():
@@ -52,7 +60,9 @@ class ShowTheDataFrame(View):
         Args:
             request (HttpRequest): _description_
         """
-        file = r"/home/amir/django/data_analys/datas/titanic.csv"
+        # file = r"/home/amir/django/data_analys/Iris.csv"
+        file = f"{request.session['main_file']}"
+        # print(file)
         csv_reader = CSVReader(file)
         data_info = csv_reader.data_info()
         describe = csv_reader.data_describe()
@@ -86,8 +96,13 @@ class ShowThePlot(View):
         View (django.views): this is the views
     """
 
-    file = r"/home/amir/django/data_analys/datas/titanic.csv"
-
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.file = None
+        
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        self.file = request.session.get("main_file")
+        return super().dispatch(request, *args, **kwargs)
     def get(self, request: HttpRequest):
         """
         this method is for the handling the get method for a time that user send the get request for
