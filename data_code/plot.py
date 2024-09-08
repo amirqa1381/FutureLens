@@ -19,6 +19,13 @@ class Plotter:
         except pd.errors.ParserError:
             print("Error: Error parsing the file. Please check the file format.")
 
+    def decoding(self, plot):
+        buffer = io.BytesIO()
+        plot.savefig(buffer, format='png')
+        buffer.seek(0)
+        plot_url = base64.b64encode(buffer.getvalue()).decode()
+        return plot_url
+
     def data_column(self):
         """Display the column names as a list."""
         try:
@@ -27,49 +34,43 @@ class Plotter:
         except AttributeError:
             print("Error: No data available. Please load the data first.")
 
-    def plot(self, x, y, hue=None):
+    def plot(self, x, y):
         try:
-            plt.plot(self.data[x], self.data[y], color=hue)
+            plt.plot(self.data[x], self.data[y])
             plt.xlabel(x)
             plt.ylabel(y)
             plt.title(f'Plot of {x} vs {y}')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64decode(buffer.getvalue()).decode()
-            return plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
             print("Error: Column not found. Please check the column names.")
 
-    def histplot(self, column, hue=None):
+    def histplot(self, column):
         try:
-            sns.histplot(data=self.data, x=column, hue=hue)
+            sns.histplot(data=self.data, x=column)
             plt.xlabel(column)
             plt.ylabel('Frequency')
             plt.title(f'Histogram of {column}')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64encode(buffer.getvalue()).decode('utf-8')
-            return plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
             print("Error: Column not found. Please check the column names.")
 
-    def scatterplot(self, x, y, hue=None):
+    def scatterplot(self, x, y):
         try:
-            plt.scatter(self.data[x], self.data[y], c=self.data[hue])
+            plt.scatter(self.data[x], self.data[y])
             plt.xlabel(x)
             plt.ylabel(y)
             plt.title(f'Scatter Plot of {x} vs {y}')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64encode(buffer.getvalue()).decode('utf-8')
-            return  plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         # except KeyError:
@@ -81,26 +82,23 @@ class Plotter:
             plt.xlabel(x)
             plt.ylabel(y)
             plt.title(f'Bar Chart of {x} vs {y}')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64decode(buffer.getvalue()).decode()
-            return plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
             print("Error: Column not found. Please check the column names.")
 
-    def boxplot(self):
+    def boxplot(self, columns):
         try:
-            print(self.data.dtypes)
-            plt.boxplot(self.data.values)
+
+            plt.boxplot(self.data[columns])
             plt.title('Box Plot')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64decode(buffer.getvalue()).decode()
-            return plot_url
+            plt.xlabel(columns)
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -110,11 +108,9 @@ class Plotter:
         try:
             sns.pairplot(self.data)
             plt.title('Pair Plot')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64decode(buffer.getvalue()).decode()
-            return plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -124,11 +120,9 @@ class Plotter:
         try:
             sns.countplot(x=column, data=self.data)
             plt.title(f'Count Plot of {column}')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64decode(buffer.getvalue()).decode()
-            return plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -138,14 +132,9 @@ class Plotter:
         try:
             sns.distplot(self.data[column])
             plt.title(f'Distribution Plot of {column}')
-            # here i've created a buffer for read and write 
-            buffer = io.BytesIO()
-            # saving the plot fig
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            # here i've encode the buffer for showing it in the template
-            plot_url = base64.b64encode(buffer.getvalue()).decode()
-            return plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
         except KeyError:
@@ -155,24 +144,11 @@ class Plotter:
         try:
             sns.heatmap(self.data.corr(), annot=True, cmap='coolwarm', square=True)
             plt.title('Heatmap')
-            buffer = io.BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
-            plot_url = base64.b64encode(buffer.getvalue()).decode()
-            return plot_url
+            url = self.decoding(plt)
+            plt.close()
+            return url
         except AttributeError:
             print("Error: No data available. Please load the data first.")
-
-
-def get_specific_method_name(cls , substring: str):
-    """
-    here we get the class name and we bring the all the methods that has substring on it
-    Args:
-        sustring (string): a string that we pass for get the methods that have this substring on it
-    """
-    search_result = [name for name , _ in inspect.getmembers(cls, predicate=inspect.isfunction) if substring in name]
-    return search_result
-
 
 
 def get_length_of_methods(cls , substring: str):
@@ -181,7 +157,7 @@ def get_length_of_methods(cls , substring: str):
     paramater of each method
     """
     method_param_length = {}
-    list_of_methods = get_specific_method_name(cls , substring)
+    list_of_methods = [name for name , _ in inspect.getmembers(cls, predicate=inspect.isfunction) if substring in name]
     for name in list_of_methods:
         # here i retrived the method from the class and if method does not exist in the class it returns None
         method = getattr(cls, name, None)
@@ -198,3 +174,7 @@ def get_length_of_methods(cls , substring: str):
     return method_param_length          
 
 
+file = r"C:\Users\ae_sa\OneDrive\Desktop\django\FirstProject\djda\datas\titanic.csv"
+plot = Plotter(file)
+# print('above func:', get_specific_method_name(Plotter, 'plot'))
+print(get_length_of_methods(Plotter, 'plot'))
