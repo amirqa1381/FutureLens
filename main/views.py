@@ -5,6 +5,7 @@ from data_code.prepare import CSVReader
 from data_code.plot import Plotter, get_length_of_methods
 from django.contrib import messages
 from .forms import UploadedFile
+from django.core.files.storage import FileSystemStorage
 
 
 class IndexView(View):
@@ -29,9 +30,11 @@ class IndexView(View):
         """
         form = UploadedFile(request.POST, request.FILES)
         if form.is_valid():
-            file = form.cleaned_data["file"]
-            print(file.content_type)
-            print(file.name)
+            file = form.cleaned_data['file']  # Remove subscripting
+            fs = FileSystemStorage(location="media/uploaded-file")
+            filename = fs.save(file.name, file)
+            uploaded_file_url = fs.url(filename)
+            messages.success(request, "The file was successfully uploaded")
             return redirect("index")
         else:
             for error in form.errors.values():
