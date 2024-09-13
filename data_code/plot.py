@@ -140,16 +140,6 @@ class Plotter:
         except KeyError:
             print("Error: Column not found. Please check the column names.")
 
-    def heatmapplot(self):
-        try:
-            sns.heatmap(self.data.corr(), annot=True, cmap='coolwarm', square=True)
-            plt.title('Heatmap')
-            url = self.decoding(plt)
-            plt.close()
-            return url
-        except AttributeError:
-            print("Error: No data available. Please load the data first.")
-
 
 def get_length_of_methods(cls , substring: str):
     """
