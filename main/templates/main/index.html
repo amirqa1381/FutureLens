@@ -5,29 +5,39 @@ Home
 {% endblock %}  
 
 {% block content %}  
-<div class='container mt-5'>  
-    <div class='row'>  
-        <div class='col-md-12 text-center'>  
-            <h1 id='head-file'>  
-                Data Analysis App  
-            </h1>  
-        </div>  
-    </div>  
+<div class="hero">  
+    <h1 class="display-4">Unlocking Insights Through Data</h1>  
+    <p class="lead">A comprehensive analysis of data to drive informed decision-making.</p>  
+    <a class="btn btn-primary btn-lg" href="#description" role="button">Learn More</a>  
+</div>  
 
-    <div class='row mt-4'>  
-        <div class='col-md-12 text-center'>  
-            <br><br>
-            <div class="mb-3">
-                <form action="{% url "index" %}" method="post" enctype="multipart/form-data".>
-                    {% csrf_token %}
-                    {{form.file}}
-                    <button type="submit" class="btn btn-warning mt-3">Submit</button>  
-                </form>
-            </div>
-            {% comment %} <div class="btn-group mt-3" role="group" aria-label="Basic example">  
-                <a href='{% url "data-frame" %}' type="button" class="btn btn-primary" style="margin:20px;border-radius:20px">DataFrame</a>  
-                <a href="{% url "show_plot" %}" type="a" class="btn btn-secondary" style="margin:20px;border-radius:20px">Plot</a>  
-            </div>   {% endcomment %}
+<!-- Description Section -->  
+<div class="container" id="description">  
+    <h2 class="my-4">Project Description</h2>  
+    <p>This project focuses on leveraging data analysis techniques to identify trends, patterns, and insights from various datasets. Utilizing tools like Python, R, and SQL, we aim to deliver impactful visualizations and actionable recommendations.</p>  
+</div>  
+
+<!-- Features Section -->  
+<div class="container" id="features">  
+    <h2 class="my-4">Key Features</h2>  
+    <div class="row">  
+        <div class="col-md-4">  
+            <div class="feature">  
+                <h3>Data Cleaning</h3>  
+                <p>Ensuring data integrity by preprocessing and cleaning data for accurate analysis.</p>  
+            </div>  
+        </div>  
+        <div class="col-md-4">  
+            <div class="feature">  
+                <h3>Data Visualization</h3>  
+                <p>Creating interactive visualizations that make data easy to understand and act upon.</p>  
+            </div>  
+        </div>  
+        <div class="col-md-4">  
+            <div class="feature">  
+                <h3>Machine Learning</h3>  
+                <p>Applying machine learning algorithms to predict future trends based on historical data.</p>  
+            </div>  
         </div>  
     </div>  
 </div>  
