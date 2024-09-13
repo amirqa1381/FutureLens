@@ -6,7 +6,7 @@ from data_code.prepare import CSVReader
 from data_code.plot import Plotter, get_length_of_methods
 from django.contrib import messages
 from .forms import UploadedFile
-from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.mixins import LoginRequiredMixin
 import os 
 
 
@@ -24,9 +24,8 @@ class IndexView(View):
         """
         this function is the get method and is for handling the get method for routing it
         """
-        form = UploadedFile()
-        context = {"form": form}
-        return render(request, "main/index.html", context)
+        
+        return render(request, "main/index.html")
 
     def post(self, request: HttpRequest):
         """
@@ -34,11 +33,9 @@ class IndexView(View):
         """
         form = UploadedFile(request.POST, request.FILES)
         if form.is_valid():
-            file = form.cleaned_data['file']  # Remove subscripting
-            fs = FileSystemStorage(location="media/uploaded-file")
-            filename = fs.save(file.name, file)
-            request.session['main_file'] = os.path.abspath(filename)
-            print(request.session['main_file'])
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
             messages.success(request, "The file was successfully uploaded")
             return redirect("index")
         else:
