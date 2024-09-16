@@ -20,4 +20,4 @@ class UserFiles(models.Model):
         super(UserFiles, self).save(*args, **kwargs)
     
     def __str__(self) -> str:
-        return f"{self.user.username} -> {self.title}"
+        return f"{self.file}"

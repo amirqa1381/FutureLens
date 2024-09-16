@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
@@ -7,8 +8,9 @@ from data_code.plot import Plotter, get_length_of_methods
 from django.contrib import messages
 from .forms import UploadedFile
 from django.contrib.auth.mixins import LoginRequiredMixin
-import os 
-
+from django.urls import reverse_lazy
+from django.views.generic import FormView, ListView
+import os
 
 
 
@@ -31,39 +33,49 @@ class IndexView(View):
         """
         this function is the post method and is for handling the post method for routing it
         """
-        form = UploadedFile(request.POST, request.FILES)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.user = request.user
-            instance.save()
-            messages.success(request, "The file was successfully uploaded")
-            return redirect("index")
-        else:
-            for error in form.errors.values():
-                for message in error:
-                    messages.error(request, message)
-            context = {
-                "form": form,
-            }
-            return render(request, "main/index.html", context)
+        pass
+
+class UploadTheFile(LoginRequiredMixin,FormView):
+    """
+    this is a class that is for the uploading the file and this class handle it for us
+    and only authenticated users can upload the file here and anonymos user can not do that 
+    """
+    template_name = "main/upload-file.html"
+    form_class = UploadedFile
+    success_url = reverse_lazy("index")
+    
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.user = self.request.user
+        instance.save()
+        messages.success(self.request, "The file was successfully uploaded")
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        # here i want to add the message to the errors of the request
+        for error in form.errors.values():
+            for message in error:
+                messages.error(self.request, message)
+        return response
+    
 
 
 class ShowTheDataFrame(View):
 
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest, slug):
         """
         this function is for the get method and when user send the get request this is come
         to this method
         Args:
             request (HttpRequest): _description_
         """
-        # file = r"/home/amir/django/data_analys/Iris.csv"
-        file = f"{request.session['main_file']}"
-        # print(file)
-        csv_reader = CSVReader(file)
+        # here we find the file that we user pass the slug from it for finding and retriving it
+        file = request.user.userfiles_set.get(slug=slug)
+        csv_reader = CSVReader(file.file.path)
         data_info = csv_reader.data_info()
-        describe = csv_reader.data_describe()
-        data_column = csv_reader.data_column()
+        describe = csv_reader.data_describe()       
+        data_column = csv_reader.data_column()  
         context = {
             "data_info": data_info,
             "describe": describe,
@@ -146,3 +158,16 @@ class ShowThePlot(View):
                 }
                 return render(request, "main/specific_plot.html", context)
         return redirect("show_plot")
+
+
+
+class UserDatasListView(LoginRequiredMixin, ListView):
+    """
+    this is the class that we have and in this view we list all the data frames that user uploaded to the 
+    site and we show all them to the page and user have decided what it can do with them
+    """
+    template_name = "main/datas-list.html"
+    context_object_name = "datas"
+    
+    def get_queryset(self):
+        return self.request.user.userfiles_set.all()

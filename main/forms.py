@@ -1,7 +1,8 @@
 from django import forms
 import csv
 from .models import UserFiles
-
+import logging
+import mimetypes
 
 
 
@@ -19,21 +20,20 @@ class UploadedFile(forms.ModelForm):
             'file': forms.FileInput(attrs={'class': "form-control"}),
         }
         
-        def clean(self):
-            file = self.cleaned_data['file']
-            if not file.name.endswith(".csv"):
-                raise forms.ValidationError("this file is not csv file")
-            if file.content_type != "text/csv":
-                raise forms.ValidationError("only csv files are allowed for inserting")
-            try:
-                # here i want to read the file and and seek to the start of the file for with seek 
-                # and with csv.reader i try to read the file 
-                file.seek(0)
-                reader = csv.reader(file)
-            except Exception as e:
-                raise forms.ValidationError("Invalid Csv file content: "+ str(e))
-            file.seek(0)
-            return self.cleaned_data
-
+    def clean(self):
+        """
+        this function is for checking the csv file 
+        """
+        logger = logging.getLogger(__name__)
+        file = self.cleaned_data["file"]
+        
+        # here we get the type of the file that we have and after that we can check it
+        file_type, _ = mimetypes.guess_type(file.name)
+        if file_type not in ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
+            logger.error("invalid type %s: ", file_type)
+            raise forms.ValidationError("only Csv files are allowed for inserting")
+        return self.cleaned_data
+        
+        
 
 

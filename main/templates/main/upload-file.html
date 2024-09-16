@@ -1,15 +1,21 @@
 {% extends "master.html" %}
 
-
 {% block title %}
 Upload file
 {% endblock %}
 
-
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class='row mt-4'>  
+        <div class='row mt-4'>
+            <form method="post" enctype="multipart/form-data" action="{% url "uploading_file" %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{form.as_p}}
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
