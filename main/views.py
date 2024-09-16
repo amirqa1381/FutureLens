@@ -38,7 +38,7 @@ class UploadTheFile(LoginRequiredMixin,FormView):
     this is a class that is for the uploading the file and this class handle it for us
     and only authenticated users can upload the file here and anonymos user can not do that 
     """
-    template_name = "main/uploaded-file.html"
+    template_name = "main/upload-file.html"
     form_class = UploadedFile
     success_url = reverse_lazy("index")
     
