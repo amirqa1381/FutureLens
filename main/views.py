@@ -9,6 +9,7 @@ from .forms import UploadedFile
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import FormView
+import os
 
 
 
@@ -58,24 +59,22 @@ class UploadTheFile(LoginRequiredMixin,FormView):
         return response
     
 
-    
 
 class ShowTheDataFrame(View):
 
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest, slug):
         """
         this function is for the get method and when user send the get request this is come
         to this method
         Args:
             request (HttpRequest): _description_
         """
-        # file = r"/home/amir/django/data_analys/Iris.csv"
-        file = f"{request.session['main_file']}"
-        # print(file)
-        csv_reader = CSVReader(file)
+        # here we find the file that we user pass the slug from it for finding and retriving it
+        file = request.user.userfiles_set.get(slug=slug)
+        csv_reader = CSVReader(file.file.path)
         data_info = csv_reader.data_info()
-        describe = csv_reader.data_describe()
-        data_column = csv_reader.data_column()
+        describe = csv_reader.data_describe()       
+        data_column = csv_reader.data_column()  
         context = {
             "data_info": data_info,
             "describe": describe,
