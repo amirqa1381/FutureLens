@@ -1,0 +1,49 @@
+{% extends "master.html" %}
+
+{% block title %}
+Datas
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-5">User Data</h1>
+    <div class="row">
+        <!-- Loop through each user's data here -->
+        {% for data in datas %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{data.title}}</h5>
+                        <p class="card-text">{{data.created_at}}</p>
+                        <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Actions
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Choose an Action</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        choose between the below actions , the plot is for showing the all the plots that is exists
+                        for this dataframe and the dataframe is for showing the dataframe that is exists for seeing 
+                        you can choose between them for using...
+                        </div>
+                        <div class="modal-footer">
+                        <a href="" type="button" class="btn btn-primary" data-bs-dismiss="modal">Plots</a>
+                        <a href="{% url "data-frame" slug=data.slug %}" type="button" class="btn btn-primary">Dataframe</a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

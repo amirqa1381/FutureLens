@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
@@ -8,7 +9,7 @@ from django.contrib import messages
 from .forms import UploadedFile
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, ListView
 import os
 
 
@@ -157,3 +158,16 @@ class ShowThePlot(View):
                 }
                 return render(request, "main/specific_plot.html", context)
         return redirect("show_plot")
+
+
+
+class UserDatasListView(LoginRequiredMixin, ListView):
+    """
+    this is the class that we have and in this view we list all the data frames that user uploaded to the 
+    site and we show all them to the page and user have decided what it can do with them
+    """
+    template_name = "main/datas-list.html"
+    context_object_name = "datas"
+    
+    def get_queryset(self):
+        return self.request.user.userfiles_set.all()
