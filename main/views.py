@@ -7,8 +7,8 @@ from data_code.plot import Plotter, get_length_of_methods
 from django.contrib import messages
 from .forms import UploadedFile
 from django.contrib.auth.mixins import LoginRequiredMixin
-import os 
-
+from django.urls import reverse_lazy
+from django.views.generic import FormView
 
 
 
@@ -31,22 +31,34 @@ class IndexView(View):
         """
         this function is the post method and is for handling the post method for routing it
         """
-        form = UploadedFile(request.POST, request.FILES)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.user = request.user
-            instance.save()
-            messages.success(request, "The file was successfully uploaded")
-            return redirect("index")
-        else:
-            for error in form.errors.values():
-                for message in error:
-                    messages.error(request, message)
-            context = {
-                "form": form,
-            }
-            return render(request, "main/index.html", context)
+        pass
 
+class UploadTheFile(LoginRequiredMixin,FormView):
+    """
+    this is a class that is for the uploading the file and this class handle it for us
+    and only authenticated users can upload the file here and anonymos user can not do that 
+    """
+    template_name = "main/uploaded-file.html"
+    form_class = UploadedFile
+    success_url = reverse_lazy("index")
+    
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        instance.user = self.request.user
+        instance.save()
+        messages.success(self.request, "The file was successfully uploaded")
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        # here i want to add the message to the errors of the request
+        for error in form.errors.values():
+            for message in error:
+                messages.error(self.request, message)
+        return response
+    
+
+    
 
 class ShowTheDataFrame(View):
 
