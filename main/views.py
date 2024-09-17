@@ -104,38 +104,33 @@ class ShowThePlot(View):
     Args:
         View (django.views): this is the views
     """
-
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.file = None
-        
-    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        self.file = request.session.get("main_file")
-        return super().dispatch(request, *args, **kwargs)
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest, slug):
         """
         this method is for the handling the get method for a time that user send the get request for
         seeing the plot page
         Args:
             request (HttpRequest): _description_
         """
-        csv_reader = CSVReader(self.file)
+        file = request.user.userfiles_set.get(slug=slug)
+        csv_reader = CSVReader(file.file.path)
         methods = get_length_of_methods(Plotter, "plot")
         data_column = csv_reader.data_column()
         context = {
             "methods": methods,
             "data_column": data_column,
+            "slug": slug
         }
         return render(request, "main/plot.html", context)
 
-    def post(self, request: HttpRequest):
+    def post(self, request: HttpRequest, slug):
         """
         this is the method in the class that is for the handling the post requesst
 
         Args:
             request (HttpRequest): _description_
         """
-        plotter = Plotter(self.file)
+        file = self.request.user.userfiles_set.get(slug=slug)
+        plotter = Plotter(file.file.path)
         # here i've got the methods name and length of their params
         methods = get_length_of_methods(Plotter, "plot")
         checked_items = request.POST.getlist("columns[]")

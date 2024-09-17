@@ -34,7 +34,7 @@ Datas
                         you can choose between them for using...
                         </div>
                         <div class="modal-footer">
-                        <a href="" type="button" class="btn btn-primary" data-bs-dismiss="modal">Plots</a>
+                        <a href="{% url "show_plot" slug=data.slug %}" type="button" class="btn btn-primary">Plots</a>
                         <a href="{% url "data-frame" slug=data.slug %}" type="button" class="btn btn-primary">Dataframe</a>
                         </div>
                     </div>
