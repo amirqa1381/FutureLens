@@ -14,6 +14,7 @@ class UserFiles(models.Model):
     file = models.FileField(upload_to="uploaded-file", verbose_name="File")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
     slug = models.SlugField(max_length=250, verbose_name="Slug", null=True, blank=True)
+    cleaned = models.BooleanField(verbose_name="Cleaned", default=False)
     
     def save(self,*args, **kwargs) -> None:
         self.slug = slugify(self.title)
