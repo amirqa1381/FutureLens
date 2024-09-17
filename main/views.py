@@ -1,4 +1,4 @@
-from django.db.models.query import QuerySet
+from data_code.missing_data import MissingValue
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
@@ -11,6 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView
 import os
+from django.core.files import File
+import tempfile
 
 
 
@@ -166,3 +168,47 @@ class UserDatasListView(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
         return self.request.user.userfiles_set.all()
+    
+    
+    
+    
+    
+class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
+    """
+    this class is for the implemeting the fixing the data that we have for bring it to the database 
+    """
+    def post(self, request: HttpRequest, slug):
+        """
+        this function is for handling the post method that we have for fixing the data that we have 
+        and when user send the post request to it this class is for hanling it
+        Args:
+            request (HttpRequest): _description_
+            slug (_type_): _description_
+        """
+        file = self.request.user.userfiles_set.get(slug=slug)
+        missing = MissingValue(file.file.path)
+        print(f"Befor {missing.data_isna_sum()}")
+        print("====================================")
+        fixed_file = missing.handle_missing_values()
+        print(f"After {missing.data_isna_sum()}")
+        
+        # update the dataframe 
+        fixed_data = fixed_file
+        # write the updated data frame to the original file 
+        fixed_data.to_csv(file.file.path, index=False)
+        
+        # write the updated data frame to the temp file
+        temp_file = tempfile.NamedTemporaryFile(suffix=".csv")
+        fixed_data.to_csv(temp_file.name, index=False)
+        
+        # Update the database 
+        file.file.save(file.name,File(temp_file))
+        
+        # Mark the file as cleaned
+        file.cleaned = True
+        file.save()
+        
+        messages.success(self.request, "the data frame was successfully")
+        return redirect("data-list")
+        
+        
