@@ -14,5 +14,5 @@ urlpatterns = [
     path('plot/<slug:slug>', ShowThePlot.as_view(), name='show_plot'),
     path("upload-file/", UploadTheFile.as_view(), name="uploading_file"),
     path("datas-list/", UserDatasListView.as_view(), name="data-list"),
-    path("fix-data/", ImplementingMissingAndFixingData.as_view(), name="fix_data"),
+    path("fix-data/<slug:slug>", ImplementingMissingAndFixingData.as_view(), name="fix_data"),
 ]
