@@ -162,9 +162,3 @@ def get_length_of_methods(cls , substring: str):
         else:
             method_param_length[name] = "Method is not callable"
     return method_param_length          
-
-
-file = r"C:\Users\ae_sa\OneDrive\Desktop\django\FirstProject\djda\datas\titanic.csv"
-plot = Plotter(file)
-# print('above func:', get_specific_method_name(Plotter, 'plot'))
-print(get_length_of_methods(Plotter, 'plot'))
