@@ -20,7 +20,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>  
                         </div>  
                         <div>  
-                            <form action='{% url "show_plot" %}' method='post' class="p-4 border rounded shadow-sm bg-light">  
+                            <form action='{% url "show_plot" slug=slug %}' method='post' class="p-4 border rounded shadow-sm bg-light">  
                                 {% csrf_token %}  
                                 <h4 class="mb-3">Select Columns for {{ method }}</h4>  
                                 <div class="form-group">  
