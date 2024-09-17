@@ -134,5 +134,5 @@ class MissingValue:
 
             self.fill_isna_column_max(int_float_column)
             self.fill_isna_column_string_type(string_column)
-        return self.data_isna_sum()
+        return self.data
 

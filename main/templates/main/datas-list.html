@@ -16,6 +16,7 @@ Datas
                         <h5 class="card-title">{{data.title}}</h5>
                         <p class="card-text">{{data.created_at}}</p>
                         <!-- Button trigger modal -->
+                {% if data.cleaned %}
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Actions
                 </button>
@@ -42,6 +43,13 @@ Datas
                 </div>
                     </div>
                 </div>
+                {% else %}
+                <form action="{% url "fix_data" slug=data.slug %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Fixing</button>
+                </form>
+            
+                {% endif %}
             </div>
         {% endfor %}
     </div>
