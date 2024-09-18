@@ -118,7 +118,7 @@ class MissingValue:
         missing_values = self.data_isna_sum().to_dict()
 
         if all(x == 0 for x in list(missing_values.values())):
-            return "no missing values"
+            return self.data  # Return the original DataFrame if no missing values
         else:
             keys_with_missing_value = list(map(lambda x: x[0], filter(lambda x: x[1] == 1, missing_values.items())))
 
@@ -134,5 +134,4 @@ class MissingValue:
 
             self.fill_isna_column_max(int_float_column)
             self.fill_isna_column_string_type(string_column)
-        return self.data
-
+            return self.data  # Return the updated DataFrame
