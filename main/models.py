@@ -4,6 +4,18 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 
 
+def uploade_to(instance, filename):
+    """
+    this function is for preventing the creating another directory inside it
+    Args:
+        instance (_type_): _description_
+        filename (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    return f"uploaded-files/{filename}"
+
 
 class UserFiles(models.Model):
     """
@@ -11,7 +23,7 @@ class UserFiles(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="User")
     title = models.CharField(max_length=150, verbose_name="Title")
-    file = models.FileField(upload_to="uploaded-file", verbose_name="File")
+    file = models.FileField(upload_to=uploade_to, verbose_name="File")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
     slug = models.SlugField(max_length=250, verbose_name="Slug", null=True, blank=True)
     cleaned = models.BooleanField(verbose_name="Cleaned", default=False)

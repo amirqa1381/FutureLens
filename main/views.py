@@ -73,7 +73,7 @@ class ShowTheDataFrame(View):
             request (HttpRequest): _description_
         """
         # here we find the file that we user pass the slug from it for finding and retriving it
-        file = request.user.userfiles_set.get(slug=slug)
+        file = request.user.userfiles_set.get(slug=slug, user=request.user)
         csv_reader = CSVReader(file.file.path)
         data_info = csv_reader.data_info()
         describe = csv_reader.data_describe()       
@@ -124,14 +124,15 @@ class ShowThePlot(View):
         }
         return render(request, "main/plot.html", context)
 
-    def post(self, request: HttpRequest, slug):
+    def post(self, request: HttpRequest, **kwargs):
         """
         this is the method in the class that is for the handling the post requesst
 
         Args:
             request (HttpRequest): _description_
         """
-        file = self.request.user.userfiles_set.get(slug=slug)
+        slug = self.kwargs['slug']
+        file = request.user.userfiles_set.get(slug=slug)
         plotter = Plotter(file.file.path)
         # here i've got the methods name and length of their params
         methods = get_length_of_methods(Plotter, "plot")
@@ -177,7 +178,7 @@ class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
     """
     this class is for the implemeting the fixing the data that we have for bring it to the database 
     """
-    def post(self, request: HttpRequest, slug):
+    def post(self, request: HttpRequest, **kwargs):
         """
         this function is for handling the post method that we have for fixing the data that we have 
         and when user send the post request to it this class is for hanling it
@@ -185,7 +186,8 @@ class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
             request (HttpRequest): _description_
             slug (_type_): _description_
         """
-        file = self.request.user.userfiles_set.get(slug=slug)
+        slug = self.kwargs["slug"]
+        file = request.user.userfiles_set.get(slug=slug)
         missing = MissingValue(file.file.path)
         print(f"Befor {missing.data_isna_sum()}")
         print("====================================")
@@ -202,7 +204,7 @@ class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
         fixed_data.to_csv(temp_file.name, index=False)
         
         # Update the database 
-        file.file.save(file.name,File(temp_file))
+        file.file.save(file.file.name,File(temp_file))
         
         # Mark the file as cleaned
         file.cleaned = True
