@@ -200,12 +200,12 @@ class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
             # write the updated data frame to the original file 
             fixed_data.to_csv(file.file.path, index=False)
             
-            # write the updated data frame to the temp file
-            temp_file = tempfile.NamedTemporaryFile(suffix=".csv")
-            fixed_data.to_csv(temp_file.name, index=False)
+            # # write the updated data frame to the temp file
+            # temp_file = tempfile.NamedTemporaryFile(suffix=".csv")
+            # fixed_data.to_csv(temp_file.name, index=False)
             
             # Update the database 
-            file.file.save(file.file.name,File(temp_file))
+            file.file.save(file.file.name,file.file)
             
             # Mark the file as cleaned
             file.cleaned = True
