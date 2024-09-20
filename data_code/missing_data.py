@@ -72,19 +72,22 @@ class MissingValue:
         result = self.data[self.data[coulmn].isna()]
         return result
 
-    def fill_isna_column_max(self, columns):
+    def fill_isna_column_max(self, column):
         """
         this method is for a time that we want to fill the isna column with max value of that column
         Args:
             columns (list): this is the list of columns that we want to fill the isna
         """
-        for column in columns:
-            self.data[column] = self.data[column].fillna(self.data[column].max())
+        self.data[column] = self.data[column].fillna(self.data[column].max())
 
 
-    def fill_isna_column_string_type(self, columns):
-        for column in columns:
-            self.data[column] = self.data[column].fillna("")
+    def fill_isna_column_string_type(self, column):
+        """
+        here in this method of missing value we fill the columns that type of them are string and 
+        we fil them with empty string....
+        """
+        self.data[column] = self.data[column].fillna("")
+        
 
     def fill_all_isna_columns(self):
         """
@@ -96,6 +99,7 @@ class MissingValue:
                 self.fill_isna_column_max(column)
             else:
                 self.fill_isna_column_string_type(column)
+        return self.data
 
     def data_column_type(self, column) -> dict:
         """
