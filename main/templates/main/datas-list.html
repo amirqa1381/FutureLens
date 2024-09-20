@@ -17,12 +17,12 @@ Datas
                         <p class="card-text">{{data.created_at}}</p>
                         <!-- Button trigger modal -->
                 {% if data.cleaned %}
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-{{data.slug}}">
                     Actions
                 </button>
                 
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="exampleModal-{{data.slug}}" tabindex="-1" aria-labelledby="exampleModalLabel-{{data.slug}}" aria-hidden="true">
                     <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

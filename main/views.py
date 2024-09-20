@@ -191,26 +191,30 @@ class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
         missing = MissingValue(file.file.path)
         print(f"Befor {missing.data_isna_sum()}")
         print("====================================")
-        fixed_file = missing.handle_missing_values()
+        fixed_file = missing.fill_all_isna_columns()
         print(f"After {missing.data_isna_sum()}")
         
-        # update the dataframe 
-        fixed_data = fixed_file
-        # write the updated data frame to the original file 
-        fixed_data.to_csv(file.file.path, index=False)
-        
-        # write the updated data frame to the temp file
-        temp_file = tempfile.NamedTemporaryFile(suffix=".csv")
-        fixed_data.to_csv(temp_file.name, index=False)
-        
-        # Update the database 
-        file.file.save(file.file.name,File(temp_file))
-        
-        # Mark the file as cleaned
-        file.cleaned = True
-        file.save()
-        
-        messages.success(self.request, "the data frame was successfully")
-        return redirect("data-list")
+        if fixed_file is not None:
+            # update the dataframe 
+            fixed_data = fixed_file
+            # write the updated data frame to the original file 
+            fixed_data.to_csv(file.file.path, index=False)
+            
+            # # write the updated data frame to the temp file
+            # temp_file = tempfile.NamedTemporaryFile(suffix=".csv")
+            # fixed_data.to_csv(temp_file.name, index=False)
+            
+            # Update the database 
+            file.file.save(file.file.name,file.file)
+            
+            # Mark the file as cleaned
+            file.cleaned = True
+            file.save()
+            
+            messages.success(self.request, "the data frame was successfully")
+            return redirect("data-list")
+        else:
+            messages.error(request, "failed to fixed data")
+            return redirect('data-list')
         
         
