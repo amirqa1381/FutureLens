@@ -12,7 +12,7 @@ def search_view(request: HttpRequest):
     """
     if  request.method == "POST":
         searched = request.POST.get('searched', None)
-        results = User.userfiles_set.filter(Q(title__icontains=searched) | Q(slug__containes=searched) & Q(cleaned=True))
+        results = request.user.userfiles_set.filter(Q(title__icontains=searched) | Q(slug__icontains=searched) & Q(cleaned=True))
         if results is not None:
             context = {
             'results': results
