@@ -1,19 +1,19 @@
 {% extends "master.html" %}
-
+{% load static %}
 
 {% block title %}
 
 {% endblock %}
 
 {% block content %}
-<div class='container'>
+<div class='container d-flex justify-content-center'>
     <div class='row'>
-        <div class='col-md-12'>
+        <div class='col-md-12' style="margin-top:5rem">
             <h1>this is the search result that we have</h1>
             {% if results %}
                 {% for re in results %}
-                <div class='col-md-4'><div class="card" style="width: 18rem;">
-                    <img src="..." class="card-img-top" alt="...">
+                <div class='col-md-4'><div class="card" style="width: 18rem;margin-top:2rem">
+                    <img src="{% static "images/pandas.png" %}" class="card-img-top" alt="...">
                     <div class="card-body">
                     <h5 class="card-title">{{re.title}}</h5>
                     <a href="#" class="btn btn-primary">Go somewhere</a>
