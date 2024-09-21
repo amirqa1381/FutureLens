@@ -15,7 +15,6 @@ from django.core.files import File
 import tempfile
 
 
-
 class IndexView(View):
     """
     this is the main class that we have for showing the main page for project
@@ -28,7 +27,7 @@ class IndexView(View):
         """
         this function is the get method and is for handling the get method for routing it
         """
-        
+
         return render(request, "main/index.html")
 
     def post(self, request: HttpRequest):
@@ -37,22 +36,24 @@ class IndexView(View):
         """
         pass
 
-class UploadTheFile(LoginRequiredMixin,FormView):
+
+class UploadTheFile(LoginRequiredMixin, FormView):
     """
     this is a class that is for the uploading the file and this class handle it for us
-    and only authenticated users can upload the file here and anonymos user can not do that 
+    and only authenticated users can upload the file here and anonymos user can not do that
     """
+
     template_name = "main/upload-file.html"
     form_class = UploadedFile
     success_url = reverse_lazy("index")
-    
+
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.user = self.request.user
         instance.save()
         messages.success(self.request, "The file was successfully uploaded")
         return super().form_valid(form)
-    
+
     def form_invalid(self, form):
         response = super().form_invalid(form)
         # here i want to add the message to the errors of the request
@@ -60,7 +61,6 @@ class UploadTheFile(LoginRequiredMixin,FormView):
             for message in error:
                 messages.error(self.request, message)
         return response
-    
 
 
 class ShowTheDataFrame(View):
@@ -76,8 +76,8 @@ class ShowTheDataFrame(View):
         file = request.user.userfiles_set.get(slug=slug, user=request.user)
         csv_reader = CSVReader(file.file.path)
         data_info = csv_reader.data_info()
-        describe = csv_reader.data_describe()       
-        data_column = csv_reader.data_column()  
+        describe = csv_reader.data_describe()
+        data_column = csv_reader.data_column()
         context = {
             "data_info": data_info,
             "describe": describe,
@@ -106,6 +106,7 @@ class ShowThePlot(View):
     Args:
         View (django.views): this is the views
     """
+
     def get(self, request: HttpRequest, slug):
         """
         this method is for the handling the get method for a time that user send the get request for
@@ -117,11 +118,7 @@ class ShowThePlot(View):
         csv_reader = CSVReader(file.file.path)
         methods = get_length_of_methods(Plotter, "plot")
         data_column = csv_reader.data_column()
-        context = {
-            "methods": methods,
-            "data_column": data_column,
-            "slug": slug
-        }
+        context = {"methods": methods, "data_column": data_column, "slug": slug}
         return render(request, "main/plot.html", context)
 
     def post(self, request: HttpRequest, **kwargs):
@@ -131,7 +128,7 @@ class ShowThePlot(View):
         Args:
             request (HttpRequest): _description_
         """
-        slug = self.kwargs['slug']
+        slug = self.kwargs["slug"]
         file = request.user.userfiles_set.get(slug=slug)
         plotter = Plotter(file.file.path)
         # here i've got the methods name and length of their params
@@ -158,29 +155,27 @@ class ShowThePlot(View):
         return redirect("show_plot")
 
 
-
 class UserDatasListView(LoginRequiredMixin, ListView):
     """
-    this is the class that we have and in this view we list all the data frames that user uploaded to the 
+    this is the class that we have and in this view we list all the data frames that user uploaded to the
     site and we show all them to the page and user have decided what it can do with them
     """
+
     template_name = "main/datas-list.html"
     context_object_name = "datas"
-    
+
     def get_queryset(self):
         return self.request.user.userfiles_set.all()
-    
-    
-    
-    
-    
+
+
 class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
     """
-    this class is for the implemeting the fixing the data that we have for bring it to the database 
+    this class is for the implemeting the fixing the data that we have for bring it to the database
     """
+
     def post(self, request: HttpRequest, **kwargs):
         """
-        this function is for handling the post method that we have for fixing the data that we have 
+        this function is for handling the post method that we have for fixing the data that we have
         and when user send the post request to it this class is for hanling it
         Args:
             request (HttpRequest): _description_
@@ -193,28 +188,20 @@ class ImplementingMissingAndFixingData(LoginRequiredMixin, View):
         print("====================================")
         fixed_file = missing.fill_all_isna_columns()
         print(f"After {missing.data_isna_sum()}")
-        
+
         if fixed_file is not None:
-            # update the dataframe 
+            # update the dataframe
             fixed_data = fixed_file
-            # write the updated data frame to the original file 
-            fixed_data.to_csv(file.file.path, index=False)
             
-            # # write the updated data frame to the temp file
-            # temp_file = tempfile.NamedTemporaryFile(suffix=".csv")
-            # fixed_data.to_csv(temp_file.name, index=False)
-            
-            # Update the database 
-            file.file.save(file.file.name,file.file)
-            
+            # here we open the original file and rewrite the cleaned data frame on it
+            with open(file.file.path, "w") as f:
+                fixed_data.to_csv(f, index=False)
+                
             # Mark the file as cleaned
             file.cleaned = True
             file.save()
-            
             messages.success(self.request, "the data frame was successfully")
             return redirect("data-list")
         else:
             messages.error(request, "failed to fixed data")
-            return redirect('data-list')
-        
-        
+            return redirect("data-list")
