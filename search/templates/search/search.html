@@ -9,7 +9,22 @@
 <div class='container'>
     <div class='row'>
         <div class='col-md-12'>
-            
+            <h1>this is the search result that we have</h1>
+            {% if results %}
+                {% for re in results %}
+                <div class='col-md-4'><div class="card" style="width: 18rem;">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                    <h5 class="card-title">{{re.title}}</h5>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        {{result}} , back to <a href="{% url "index" %}" class="alert-link">Home</a>
+                    </div>
+            {% endif %}
         </div>
     </div>
 </div>
