@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.db.models import Q
 from .tokens import generate_token, retrive_query_from_token
+from django.urls import reverse_lazy
 
 
 def search_view(request: HttpRequest):
@@ -13,7 +14,7 @@ def search_view(request: HttpRequest):
     if request.method == "POST":
         query = request.POST.get("searched", None)
         token = generate_token(query)
-        return redirect("", args=[token])
+        return redirect(reverse_lazy("search_results", kwargs={'token': token}))
     
 
 def search_result(request: HttpRequest, token):
