@@ -16,13 +16,38 @@
                     <img src="{% static "images/pandas.png" %}" class="card-img-top" alt="...">
                     <div class="card-body">
                     <h5 class="card-title">{{re.title}}</h5>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-{{data.slug}}">
+                        Actions
+                    </button>
+                    <a href="{% url "index"%}" type="button" class="btn btn-warning">Home</a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal-{{data.slug}}" tabindex="-1" aria-labelledby="exampleModalLabel-{{data.slug}}" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Choose an Action</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            choose between the below actions , the plot is for showing the all the plots that is exists
+                            for this dataframe and the dataframe is for showing the dataframe that is exists for seeing 
+                            you can choose between them for using...
+                            </div>
+                            <div class="modal-footer">
+                            <a href="{% url "show_plot" slug=re.slug %}" type="button" class="btn btn-primary">Plots</a>
+                            <a href="{% url "data-frame" slug=re.slug %}" type="button" class="btn btn-primary">Dataframe</a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
                 {% endfor %}
                 {% else %}
                     <div class="alert alert-danger" role="alert">
-                        {{result}} , back to <a href="{% url "index" %}" class="alert-link">Home</a>
+                        Nothing found .... , back to <a href="{% url "index" %}" class="alert-link">Home</a>
                     </div>
             {% endif %}
         </div>
