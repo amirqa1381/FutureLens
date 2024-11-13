@@ -3,7 +3,7 @@ import pandas as pd
 
 class MissingValue:
     """
-    this class is for the missing the values of the dataframe and
+    this class is for the missing the values of the data frame and
     we should find them and fill or remove them
     """
 
@@ -23,19 +23,19 @@ class MissingValue:
         if user want to see the more than the default of the head , it can pass a number as input to the
         function
         Args:
-            row (int, optional): a number can pass to the function for receving the dataframe row
+            row (int, optional): a number can pass to the function for receiving the data frame row
         """
         return self.data.head(row)
 
     def data_frame_info(self):
         """
-        this function is for showing the information of the dataframe
+        this function is for showing the information of the data frame
         """
         return self.data.info()
 
     def data_frame_shape(self):
         """
-        this function is for showing the shape of the dataframe
+        this function is for showing the shape of the data frame
         """
         return self.data.shape
 
@@ -53,7 +53,7 @@ class MissingValue:
 
     def data_unique_value(self, column: str):
         """
-        this function is for retriving the unique value that is in the each column of the dataframe
+        this function is for retrieving the unique value that is in the each column of the data frame
         Args:
             column (str): name of the column that we have
         """
@@ -63,13 +63,13 @@ class MissingValue:
         except:
             print("Missing some value")
 
-    def find_data_isna_column(self, coulmn: str):
+    def find_data_isna_column(self, column: str):
         """
         this function is for a time that we want to finding the isna from specific column
         Args:
-            coulmn (str): specify the name of the column that we want to find its nall
+            column (str): specify the name of the column that we want to find its nall
         """
-        result = self.data[self.data[coulmn].isna()]
+        result = self.data[self.data[column].isna()]
         return result
 
     def fill_isna_column_max(self, column):
@@ -91,8 +91,8 @@ class MissingValue:
 
     def fill_all_isna_columns(self):
         """
-        in this method we fill all the isna clumns , if coulmn was bifc we fill it with max valure
-        and if the column was string we fill it with empty qutation
+        in this method we fill all the isna columns , if column was bifc we fill it with max value
+        and if the column was string we fill it with empty quotation
         """
         for column in self.data_columns():
             if self.data[column].dtypes.kind == "bifc":
