@@ -143,6 +143,7 @@ class ShowThePlot(View):
                     request,
                     f"The columns that you've chose is {len(checked_items)} but you should insert {methods[chosen_method]}",
                 )
+                return redirect("show_plot", slug=slug)
             else:
                 # here i unpack the items that user passed for giving them to the method
                 result = method(*checked_items)
@@ -152,7 +153,6 @@ class ShowThePlot(View):
                     "result": result,
                 }
                 return render(request, "main/specific_plot.html", context)
-        return redirect("show_plot")
 
 
 class UserDatasListView(LoginRequiredMixin, ListView):
